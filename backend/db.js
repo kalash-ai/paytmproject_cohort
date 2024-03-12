@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
         lowerCase : true,
         
     },
-    Password : {
+    password : {
         type : String,
         required : true,
         lowerCase : true,
@@ -41,9 +41,9 @@ required : true
 }
 })
 
-const Account = mongoose.model('Account', accountSchema);
 const User = mongoose.model('User', userSchema);
-module.export ={
+const Account = mongoose.model('Account', accountSchema);
+module.exports ={
     User,
     Account
 }
