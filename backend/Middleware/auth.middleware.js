@@ -1,15 +1,20 @@
 const JWT_SECRET= require('../config')
 const jwt = require('jsonwebtoken')
+
+// const JWT_SECRET =  "password122"
 function authMiddleWare (req,res,next){
-    const authorization = req.headers.authorization
-if((!authorization || !authorization.startsWith('Bearer'))){
-    res.json({message : "Something is wronWith the Token"})
+    const authHeaders = req.headers.authorization
+    console.log(authHeaders)
+if((!authHeaders || !authHeaders.startsWith('Bearer ' ))){
+    console.log("Something is wrong with the token")
+    res.json({message : "Something is wrong With the Token"})
 }
-const authHeaders = authorization.split(' ')[1]
+const token = authHeaders.split(' ')[1];
 
 try {
-    const Validation = jwt.verify(authHeaders, JWT_SECRET)
-    req.userId = Validation.userId
+    const decoded  = jwt.verify(token , JWT_SECRET)
+    // console.log("REACHED" ) 
+    req.userId = decoded.userId;
     next()
 } catch (error) {
     res.json({

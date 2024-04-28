@@ -79,7 +79,7 @@ router.post('/signin', async (req, res) => {
         const token = jwt.sign({
             userId: user._id
         }, JWT_SECRET)
-        // Console.log(token)
+     
         console.log(token)
         res.json({
             token: "Successfully Logged In ", token,
@@ -115,26 +115,35 @@ router.put('/', authMiddleWare, async (req, res)=>{
     })
 })
 router.get('/bulk', async(req,res)=>{
-    const filter = req.query.filter ||"";
-    const users = await User.findOne({
-        $or:[{
-            firstname:{
-                "$regex" : filter
-            }
-
-        },{
-            lastname : {
-                "$regex" : filter
-            }
-        }]
-    })
-    res.json({
-        user : users.map(user=>({
-            username : user.username,
-            firstname : user.firstname,
-            lastname : user.lastname,
-            _id : users._id
-        }))
-    })
+   try {
+    const filter = req.query.filter || "";
+     const users = await User.find({
+         $or:[{
+             FirstName:{
+                 "$regex" : filter
+             }
+ 
+         },{
+             LastName : {
+                 "$regex" : filter
+             }
+         }]
+     })
+     if(!users){
+         res.json({message : "No users Found with the given name"})
+     }
+     res.json({
+         user: users.map(user => ({
+             username: user.username,
+             FirstName: user.FirstName,
+             LastName: user.LastName,
+             _id: user._id
+         }))
+     })
+   } catch (error) {
+    console.log("Some Error Occured While Searching for the USer" , error)
+    res.json({message : "Some Error Occured While Searching for the user"})
+    
+   }
 })
 module.exports=  router
